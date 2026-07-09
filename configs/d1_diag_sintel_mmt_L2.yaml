@@ -1,0 +1,6 @@
+experiment_id: "d1_diag_sintel_mmt_L2"
+dataset: "sintel"
+transform_type: "mmt"
+params:
+  levels: 2
+  eps: 0.00001

@@ -1,0 +1,13 @@
+experiment_id: "d2_graddom_mit_beta_aggressive_chroma"
+dataset: "mit"
+method: "gradient_domain"
+params:
+  levels: 3
+  beta_fine: 1.14
+  beta_coarse: 0.02
+  beta_profile: "linear"
+  chroma_modulation: true
+  chroma_gamma: 1.0
+  color_threshold: 0.05
+  median_smooth: true
+  eps: 0.00001

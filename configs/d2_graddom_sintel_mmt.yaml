@@ -1,0 +1,13 @@
+experiment_id: "d2_graddom_sintel_mmt"
+dataset: "sintel"
+method: "gradient_domain"
+params:
+  levels: 3
+  beta_fine: 1.1
+  beta_coarse: 0.1
+  beta_profile: "linear"
+  chroma_modulation: false
+  median_smooth: true
+  transform_type: "mmt"
+  median_kernel_size: 3
+  eps: 0.00001

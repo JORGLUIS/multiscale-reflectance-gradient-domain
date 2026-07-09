@@ -1,0 +1,11 @@
+experiment_id: "d2_graddom_sintel"
+dataset: "sintel"
+method: "gradient_domain"
+params:
+  levels: 3
+  beta_fine: 1.1
+  beta_coarse: 0.1
+  beta_profile: "linear"
+  chroma_modulation: false
+  median_smooth: true
+  eps: 0.00001

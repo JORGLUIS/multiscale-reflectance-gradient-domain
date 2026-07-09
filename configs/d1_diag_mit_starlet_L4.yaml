@@ -1,0 +1,6 @@
+experiment_id: "d1_diag_mit_starlet_L4"
+dataset: "mit"
+transform_type: "starlet"
+params:
+  levels: 4
+  eps: 0.00001

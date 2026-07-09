@@ -1,0 +1,6 @@
+experiment_id: "d1_diag_mit_mmt"
+dataset: "mit"
+transform_type: "mmt"
+params:
+  levels: 3
+  eps: 0.00001
