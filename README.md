@@ -3,17 +3,14 @@
 Proyecto de investigación desarrollado para el curso **IEE3787 — Procesamiento Multiescala de Imágenes** (Pontificia Universidad Católica de Chile).
 
 **Autor:** Jorge Medina
-**Supervisor:** Prof. IEE3787
 **Repositorio:** https://github.com/JORGLUIS/multiscale-reflectance-gradient-domain
-**Enfoque:** Descomposición intrínseca ($I = R \times S$) mediante una atenuación continua en dominio de gradiente que generaliza Retinex-Horn, implementada sobre pirámides Starlet (à trous B3-spline), MMT (mediana) y Wavelet (SWT db2). El punto de partida fue una regla de atribución local por magnitud con coherencia inter-escala y modulación de color, auditada contra el ground-truth (ver Sección IV-A del informe).
+**Enfoque:** Descomposición intrínseca ($I = R \times S$) mediante una atenuación continua en dominio de gradiente que generaliza Retinex-Horn, implementada sobre pirámides Starlet (à trous B3-spline), MMT (mediana) y Wavelet (SWT db2).
 
 ---
 
 ## Características del Proyecto
-* **Transformadas Multiescala Avanzadas:** Soporte completo de la transformada **Starlet à trous** y **Multiscale Median Transform (MMT)** para descomposición sin ringing de Gibbs en bordes.
-* **Módulos de Coherencia Físicos:**
-  * **Coherencia de Color:** Modula localmente el umbral de reflectancia utilizando el gradiente de la cromaticidad normalizada para evitar fugas de sombras.
-  * **Coherencia Inter-Escala:** Valida la consistencia espacial de los coeficientes de detalle entre niveles adyacentes de la transformada.
+* **Atenuación Continua en Dominio de Gradiente:** cada escala recibe un peso continuo $p(x) \in [0,1]$ en vez de un umbral binario, y la reflectancia y el shading se reintegran con dos resoluciones de Poisson independientes (mismo solver que Horn).
+* **Transformadas Multiescala Intercambiables:** el método no depende de una transformada particular — implementado sobre **Starlet à trous**, **Multiscale Median Transform (MMT)** y **Wavelet (SWT db2)** sin cambiar la formulación.
 * **Baselines de Comparación:** Implementación y evaluación exhaustiva contra:
   * Filtrado Homomórfico (filtro pasa-altos logarítmico lineal).
   * Single-Scale Retinex (SSR) y Multi-Scale Retinex (MSR) con conservación exacta de energía.
@@ -67,9 +64,9 @@ Para reproducir cualquier experimento, usando el id del archivo YAML correspondi
 ```bash
 python scripts/run_experiment.py --config configs/<experimento_id>.yaml
 ```
-Por ejemplo, para reproducir el modelo propuesto MMT completo en Sintel:
+Por ejemplo, para reproducir la variante Wavelet del método final en Sintel:
 ```bash
-python scripts/run_experiment.py --config configs/f3_sintel_mmt_all.yaml
+python scripts/run_experiment.py --config configs/d2_graddom_sintel_wavelet.yaml
 ```
 Los resultados cuantitativos se guardan en archivos CSV en `results/tables/`.
 
@@ -96,7 +93,7 @@ pytest -v
 ├── src/              # Lógica pura del pipeline
 │   ├── baselines/    # Baselines (homomorphic, ssr, msr, horn)
 │   ├── data/         # Loaders y normalizadores de MIT y Sintel
-│   ├── decompose/    # Reglas de atribución y pipeline multiescala
+│   ├── decompose/    # Atenuación en dominio de gradiente y pipeline multiescala
 │   ├── metrics/      # Implementación del LMSE scale-invariant
 │   ├── transforms/   # Wavelet Starlet y Multiscale Median Transform (MMT)
 │   └── utils/        # resolvedor de Poisson, espacio de color y color mapping
