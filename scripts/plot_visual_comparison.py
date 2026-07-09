@@ -2,9 +2,9 @@
 """
 scripts/plot_visual_comparison.py
 Genera Informe/mit_multiscale_comparison.png y sintel_multiscale_comparison.png
-(Figura 3 del informe): compara la regla por magnitud (Starlet, Wavelet, MMT)
-contra el metodo final (atenuacion continua en dominio de gradiente) en tres
-ejemplos por dataset, con su error absoluto de reflectancia.
+(Figura 3 del informe): reflectancia estimada y error absoluto del metodo final
+(atenuacion continua en dominio de gradiente) en sus tres variantes de
+transformada (Starlet, MMT, Wavelet), en tres ejemplos por dataset.
 """
 
 import sys
@@ -87,23 +87,36 @@ def compute_example_metrics(data, est_shading, est_refl):
     return metrics, error_map
 
 
-def show_rgb(ax, image, title):
+def show_rgb(ax, image, title, fontsize=8):
     ax.imshow(np.clip(image, 0.0, 1.0))
-    ax.set_title(title, fontsize=8)
+    if title:
+        ax.set_title(title, fontsize=fontsize)
     ax.axis("off")
 
 
 def show_multiscale_comparison(dataset_name, items, experiments, output_path):
-    rows = 2 * len(items)
-    cols = 2 + len(experiments)
-    fig_height = 3.1 * len(items)
-    fig_width = 4.5 + 3.0 * len(experiments)
-    fig = plt.figure(figsize=(fig_width, fig_height), constrained_layout=True)
-    grid = fig.add_gridspec(
-        rows,
-        cols,
-        width_ratios=[0.9, 0.9] + [1.15] * len(experiments),
-    )
+    """Una fila por ejemplo: Entrada, GT, y por cada variante del metodo final
+    su reflectancia estimada y su error absoluto como columnas separadas
+    (2 + 2*len(experiments) columnas en total)."""
+    nrows = len(items)
+    ncols = 2 + 2 * len(experiments)
+    cell_w_in = 1.85
+
+    row_heights = []
+    item_titles = []
+    for item in items:
+        if dataset_name == "mit":
+            example_id, data = item
+            item_titles.append(example_id)
+        else:
+            scene_id, frame_file, data = item
+            item_titles.append(f"{scene_id}/{frame_file.replace('.png', '')}")
+        img_h, img_w = data["diffuse"].shape[:2]
+        row_heights.append(img_h / img_w)
+    fig_height = sum(row_heights) * cell_w_in + 0.55 * nrows + 0.25
+
+    fig = plt.figure(figsize=(cell_w_in * ncols, fig_height))
+    grid = fig.add_gridspec(nrows, ncols, height_ratios=row_heights, hspace=0.45, wspace=0.05)
 
     error_cmap = plt.get_cmap("magma").copy()
     error_cmap.set_bad(color="black")
@@ -111,24 +124,19 @@ def show_multiscale_comparison(dataset_name, items, experiments, output_path):
     last_error = None
     records = []
 
-    for item_index, item in enumerate(items):
-        image_row = 2 * item_index
-        error_row = image_row + 1
-
+    for row, (item, item_title) in enumerate(zip(items, item_titles)):
         if dataset_name == "mit":
-            example_id, data = item
-            item_title = example_id
-            summary_id = example_id
+            _, data = item
+            summary_id = item_title
         else:
-            scene_id, frame_file, data = item
-            frame_label = frame_file.replace(".png", "")
-            item_title = f"{scene_id}\n{frame_label}"
-            summary_id = f"{scene_id}/{frame_label}"
+            _, _, data = item
+            summary_id = item_title
 
-        input_ax = fig.add_subplot(grid[image_row:error_row + 1, 0])
-        gt_ax = fig.add_subplot(grid[image_row:error_row + 1, 1])
-        show_rgb(input_ax, data["diffuse"], f"Entrada\n{item_title}")
-        show_rgb(gt_ax, data["reflectance"], "Reflectancia\nGT")
+        header = (row == 0)
+        input_ax = fig.add_subplot(grid[row, 0])
+        gt_ax = fig.add_subplot(grid[row, 1])
+        show_rgb(input_ax, data["diffuse"], (f"Entrada\n{item_title}" if header else f"\n{item_title}"))
+        show_rgb(gt_ax, data["reflectance"], ("Reflectancia\nGT" if header else "\n"))
 
         for method_index, method_info in enumerate(experiments):
             method_label, exp_id = method_info
@@ -136,13 +144,15 @@ def show_multiscale_comparison(dataset_name, items, experiments, output_path):
                 data["diffuse"], data["mask"], exp_id,
             )
             metrics, error_map = compute_example_metrics(data, est_shading, est_refl)
-            col = 2 + method_index
+            r_col = 2 + 2 * method_index
+            err_col = r_col + 1
 
-            estimate_ax = fig.add_subplot(grid[image_row, col])
-            error_ax = fig.add_subplot(grid[error_row, col])
-            show_rgb(estimate_ax, est_refl, f"{method_label}\nR estimada")
+            estimate_ax = fig.add_subplot(grid[row, r_col])
+            error_ax = fig.add_subplot(grid[row, err_col])
+            show_rgb(estimate_ax, est_refl, (f"{method_label}\nR estimada" if header else "\n"))
             last_error = error_ax.imshow(error_map, cmap=error_cmap, vmin=0.0, vmax=0.5)
-            error_ax.set_title(f"Error {method_label}\nLMSE {metrics['Refl_LMSE']:.3f}", fontsize=8)
+            error_ax.set_title((f"Error {method_label}\n" if header else "\n") + f"LMSE {metrics['Refl_LMSE']:.3f}",
+                                fontsize=8)
             error_ax.axis("off")
             error_axes.append(error_ax)
 
@@ -153,7 +163,7 @@ def show_multiscale_comparison(dataset_name, items, experiments, output_path):
                 **metrics,
             })
 
-    colorbar = fig.colorbar(last_error, ax=error_axes, fraction=0.02, pad=0.015)
+    colorbar = fig.colorbar(last_error, ax=error_axes, fraction=0.015, pad=0.01)
     colorbar.set_label("Error abs.", fontsize=8)
     colorbar.ax.tick_params(labelsize=8)
     fig.savefig(output_path, dpi=220, bbox_inches="tight")
@@ -164,10 +174,9 @@ def show_multiscale_comparison(dataset_name, items, experiments, output_path):
 
 def main():
     mit_visual_experiments = [
-        ("Starlet", "f3_starlet_color"),
-        ("Wavelet", "f3_wavelet_all"),
-        ("MMT", "f3_mmt"),
-        ("Metodo final", "d2_graddom_mit"),
+        ("Starlet", "d2_graddom_mit"),
+        ("MMT", "d2_graddom_mit_mmt"),
+        ("Wavelet", "d2_graddom_mit_wavelet"),
     ]
     mit_dataset = MITIntrinsicDataset()
     mit_items = [(object_id, mit_dataset.load_object(object_id))
@@ -179,10 +188,9 @@ def main():
     print(mit_summary.round(4).to_string(index=False))
 
     sintel_visual_experiments = [
-        ("Starlet", "f2_sintel_starlet"),
-        ("Wavelet", "f3_sintel_wavelet_all"),
-        ("MMT", "f3_sintel_mmt"),
-        ("Metodo final", "d2_graddom_sintel"),
+        ("Starlet", "d2_graddom_sintel"),
+        ("MMT", "d2_graddom_sintel_mmt"),
+        ("Wavelet", "d2_graddom_sintel_wavelet"),
     ]
     sintel_dataset = MPISintelDataset()
     sintel_items = [

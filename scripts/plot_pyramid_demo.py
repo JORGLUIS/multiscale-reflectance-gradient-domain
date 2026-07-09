@@ -70,7 +70,7 @@ def main():
     # Fila 2: bajo R_0 va |grad C| (no tiene nivel propio); bajo R_1,R_2,R_3
     # va ||grad R_k||, el ingrediente real de Q_k = ||grad R_k||^(beta_k-1).
     grad_c = normalize_for_display(chroma_gradient(diffuse, L, mask), mask)
-    axes[1][0].imshow(grad_c, cmap="magma", vmin=0.0, vmax=1.0)
+    im = axes[1][0].imshow(grad_c, cmap="magma", vmin=0.0, vmax=1.0)
     axes[1][0].set_title(r"$|\nabla C|$", fontsize=14)
     axes[1][0].axis("off")
 
@@ -82,6 +82,11 @@ def main():
         axes[1][k].axis("off")
 
     fig.tight_layout()
+
+    colorbar = fig.colorbar(im, ax=list(axes[1]), orientation="horizontal",
+                             fraction=0.06, pad=0.08, aspect=40)
+    colorbar.set_label("magnitud normalizada (por el máximo de cada panel)", fontsize=10)
+    colorbar.ax.tick_params(labelsize=9)
 
     out_path = project_root / "Informe" / "pyramid_demo.png"
     fig.savefig(out_path, dpi=200, bbox_inches="tight")
