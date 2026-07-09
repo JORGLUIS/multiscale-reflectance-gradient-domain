@@ -1,0 +1,9 @@
+experiment_id: "f3_starlet_scale"
+dataset: "mit"
+method: "starlet"
+params:
+  levels: 3
+  threshold_factor: 2.0
+  transform_type: "starlet"
+  scale_coherence: true
+  eps: 0.00001

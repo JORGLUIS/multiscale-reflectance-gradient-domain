@@ -1,0 +1,12 @@
+experiment_id: "f3_wavelet_all"
+dataset: "mit"
+method: "multiscale"
+params:
+  levels: 3
+  threshold_factor: 2.0
+  transform_type: "wavelet"
+  scale_coherence: true
+  color_coherence: true
+  color_threshold: 0.05
+  color_beta: 0.5
+  eps: 0.00001

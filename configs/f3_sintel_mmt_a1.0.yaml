@@ -1,0 +1,8 @@
+experiment_id: "f3_sintel_mmt_a1.0"
+dataset: "sintel"
+method: "mmt"
+params:
+  levels: 3
+  threshold_factor: 1.0
+  transform_type: "mmt"
+  eps: 0.00001

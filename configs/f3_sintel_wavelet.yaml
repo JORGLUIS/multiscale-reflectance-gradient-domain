@@ -1,0 +1,8 @@
+experiment_id: "f3_sintel_wavelet"
+dataset: "sintel"
+method: "multiscale"
+params:
+  levels: 3
+  threshold_factor: 2.0
+  transform_type: "wavelet"
+  eps: 0.00001

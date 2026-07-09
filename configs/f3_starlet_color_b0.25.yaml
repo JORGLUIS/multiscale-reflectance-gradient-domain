@@ -1,0 +1,11 @@
+experiment_id: "f3_starlet_color_b0.25"
+dataset: "mit"
+method: "starlet"
+params:
+  levels: 3
+  threshold_factor: 2.0
+  transform_type: "starlet"
+  color_coherence: true
+  color_threshold: 0.05
+  color_beta: 0.25
+  eps: 0.00001
