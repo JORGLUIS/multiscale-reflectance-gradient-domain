@@ -1,6 +1,6 @@
 # Atenuación Continua en Dominio de Gradiente para la Estimación Multiescala de Reflectancia
 
-Proyecto de investigación desarrollado para el curso **IEE3787 — Procesamiento Multiescala de Imágenes** (Pontificia Universidad Católica de Chile).
+Proyecto  **IEE3787 — Procesamiento Multiescala de Imágenes** (Pontificia Universidad Católica de Chile).
 
 **Autor:** Jorge Medina
 **Repositorio:** https://github.com/JORGLUIS/multiscale-reflectance-gradient-domain
