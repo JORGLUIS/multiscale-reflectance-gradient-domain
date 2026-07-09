@@ -1,0 +1,7 @@
+experiment_id: "f2_sintel_horn_t0.2"
+dataset: "sintel"
+method: "horn"
+params:
+  threshold: 0.2
+  L1: false
+  clip_val: 0.0001

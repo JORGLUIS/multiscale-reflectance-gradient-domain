@@ -1,0 +1,22 @@
+# Núcleo (clásico, CPU)
+numpy>=1.24
+scipy>=1.10
+scikit-image>=0.21
+PyWavelets>=1.4
+opencv-python>=4.8
+matplotlib>=3.7
+pandas>=2.0
+PyYAML>=6.0
+tqdm>=4.65
+Pillow>=10.0
+
+# Pruebas
+pytest>=7.4
+
+# Opcional — red ligera como cota superior (F4). Instalar solo si se usa la RTX 3060.
+# torch>=2.1
+# torchvision>=0.16
+
+# Opcional — transformadas direccionales (F3 ambicioso)
+# pyshearlab     # shearlets
+# curvelops      # curvelets (requiere FFTW)

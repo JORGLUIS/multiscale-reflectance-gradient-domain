@@ -1,0 +1,7 @@
+experiment_id: "f2_sintel_starlet"
+dataset: "sintel"
+method: "starlet"
+params:
+  levels: 3
+  threshold_factor: 2.0
+  eps: 0.00001

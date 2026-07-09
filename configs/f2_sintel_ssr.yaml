@@ -1,0 +1,6 @@
+experiment_id: "f2_sintel_ssr"
+dataset: "sintel"
+method: "ssr"
+params:
+  sigma: 15.0
+  eps: 0.00001

@@ -1,0 +1,6 @@
+experiment_id: "f1_homomorphic"
+dataset: "mit"
+method: "homomorphic"
+params:
+  sigma: 15.0
+  eps: 0.00001

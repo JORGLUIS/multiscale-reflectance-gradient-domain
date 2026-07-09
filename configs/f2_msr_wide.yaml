@@ -1,0 +1,6 @@
+experiment_id: "f2_msr_wide"
+dataset: "mit"
+method: "msr"
+params:
+  sigmas: [20.0, 100.0, 300.0]
+  eps: 0.00001

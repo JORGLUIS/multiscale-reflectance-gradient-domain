@@ -1,0 +1,6 @@
+experiment_id: "f2_sintel_msr_wide"
+dataset: "sintel"
+method: "msr"
+params:
+  sigmas: [20.0, 100.0, 300.0]
+  eps: 0.00001

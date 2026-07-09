@@ -1,0 +1,6 @@
+experiment_id: "f2_sintel_homomorphic_s30"
+dataset: "sintel"
+method: "homomorphic"
+params:
+  sigma: 30.0
+  eps: 0.00001
